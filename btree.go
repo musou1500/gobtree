@@ -45,7 +45,7 @@ func (n *node) split(middle int) (Item, *node) {
 	return item, next
 }
 
-func (n *node) insert(item Item, maxItems int, root bool) {
+func (n *node) insert(item Item, maxItems int) {
 	found, index := n.items.find(item)
 	if found {
 		n.items[index] = item
@@ -57,7 +57,7 @@ func (n *node) insert(item Item, maxItems int, root bool) {
 		n.items = slices.Insert(n.items, index, item)
 	} else {
 		// insert to internal node
-		n.children[index].insert(item, maxItems, false)
+		n.children[index].insert(item, maxItems)
 		// need to split?
 		if len(n.children[index].items) >= maxItems {
 			newItem, newNode := n.children[index].split(maxItems / 2)
