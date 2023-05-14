@@ -68,7 +68,7 @@ func (n *node) insert(item Item, maxItems int) {
 }
 
 func (btree *BTree) InsertOrReplace(item Item) {
-	btree.root.insert(item, btree.maxItems(), true)
+	btree.root.insert(item, btree.maxItems())
 	if len(btree.root.items) >= btree.maxItems() {
 		newItem, newNode := btree.root.split(btree.maxItems() / 2)
 		newRoot := &node{}
