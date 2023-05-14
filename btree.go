@@ -1,6 +1,10 @@
 package gobtree
 
-import "golang.org/x/exp/slices"
+import (
+	"sort"
+
+	"golang.org/x/exp/slices"
+)
 
 type Item interface {
 	Less(than Item) bool
@@ -21,13 +25,18 @@ type BTree struct {
 /**
  * find index to insert item
  */
-func (items items) find(item Item) (bool, int) {
-	for i := 0; i < len(items); i++ {
+func (items items) find(item Item) (int, bool) {
+	return sort.Find(len(items), func(i int) int {
 		if !items[i].Less(item) {
-			return !item.Less(items[i]), i
+			if !item.Less(items[i]) {
+				return 0
+			} else {
+				return -1
+			}
+		} else {
+			return 1
 		}
-	}
-	return false, len(items)
+	})
 }
 
 func New(degree int) *BTree {
@@ -49,7 +58,7 @@ func (n *node) split(middle int) (Item, *node) {
 }
 
 func (n *node) insert(item Item, maxItems int) {
-	found, index := n.items.find(item)
+	index, found := n.items.find(item)
 	if found {
 		n.items[index] = item
 		return
