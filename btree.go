@@ -31,6 +31,9 @@ func (items items) find(item Item) (bool, int) {
 }
 
 func New(degree int) *BTree {
+	if degree < 2 {
+		panic("degree must be greater than 1")
+	}
 	return &BTree{degree: degree, root: &node{}}
 }
 
