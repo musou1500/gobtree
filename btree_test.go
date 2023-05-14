@@ -37,6 +37,11 @@ func TestBTreeSplit(t *testing.T) {
 		items    []int
 		expected string
 	}{
+		{items: []int{1, 2, 3}, expected: `1
+2
+3
+`,
+		},
 		{items: []int{1, 2, 3, 4, 5, 6}, expected: `2
 4
 	1
@@ -47,16 +52,16 @@ func TestBTreeSplit(t *testing.T) {
 	6
 `,
 		},
-		{items: []int{1, 6, 2}, expected: `2
+		{items: []int{1, 6, 2, 3}, expected: `2
 	1
 
+	3
 	6
 `,
 		},
-		{items: []int{5, 6, 7, 2, 3}, expected: `3
-6
+		{items: []int{5, 6, 7, 2, 3}, expected: `6
 	2
-
+	3
 	5
 
 	7

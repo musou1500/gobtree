@@ -58,20 +58,24 @@ func (n *node) insert(item Item, maxItems int) {
 	if len(n.children) == 0 {
 		// insert to leaf node
 		n.items = slices.Insert(n.items, index, item)
-	} else {
-		// insert to internal node
-		n.children[index].insert(item, maxItems)
-		// need to split?
-		if len(n.children[index].items) >= maxItems {
-			newItem, newNode := n.children[index].split(maxItems / 2)
-			n.items = slices.Insert(n.items, index, newItem)
-			n.children = slices.Insert(n.children, index+1, newNode)
+		return
+	}
+
+	// need to split?
+	if len(n.children[index].items) >= maxItems {
+		newItem, newNode := n.children[index].split(maxItems / 2)
+		n.items = slices.Insert(n.items, index, newItem)
+		n.children = slices.Insert(n.children, index+1, newNode)
+		if index+1 < len(n.children) && n.items[index].Less(item) {
+			index++
 		}
 	}
+
+	// insert to internal node
+	n.children[index].insert(item, maxItems)
 }
 
 func (btree *BTree) InsertOrReplace(item Item) {
-	btree.root.insert(item, btree.maxItems())
 	if len(btree.root.items) >= btree.maxItems() {
 		newItem, newNode := btree.root.split(btree.maxItems() / 2)
 		newRoot := &node{}
@@ -79,6 +83,7 @@ func (btree *BTree) InsertOrReplace(item Item) {
 		newRoot.children = append(newRoot.children, btree.root, newNode)
 		btree.root = newRoot
 	}
+	btree.root.insert(item, btree.maxItems())
 }
 
 func (btree *BTree) maxItems() int {
